@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <title>Voor jou ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ff5fa2"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0f0c29; --bg2:#302b63; --bg3:#24243e; /* galaxy gradient */
+      --pink:#ff5fa2; --rose:#ff8fb1; --gold:#ffd166; --white:#fff;
+      --glass: rgba(255,255,255,.1);
+      --blur: blur(12px);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:#f7f7fb; background: radial-gradient(1200px 800px at 70% -10%, #543ab7 0%, transparent 55%), 
+                 radial-gradient(900px 600px at -10% 110%, #ff5fa218 0%, transparent 60%),
+                 linear-gradient(120deg,var(--bg1),var(--bg2) 50%,var(--bg3));
+      font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      overflow-x:hidden;
+    }
+
+    /* Floating sparkles */
+    .stars {position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
+    .star{
+      position:absolute; width:2px; height:2px; border-radius:50%;
+      background:radial-gradient(circle, #fff 0, #fff8 50%, transparent 70%);
+      animation: float 12s linear infinite;
+      opacity:.8;
+    }
+    @keyframes float{
+      from{transform:translateY(110vh) translateX(0)}
+      to{transform:translateY(-10vh) translateX(40px)}
+    }
+
+    /* Page layout */
+    .wrap{position:relative; z-index:1; min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:24px}
+    .card{
+      width:min(920px, 100%); border-radius:24px; padding:28px;
+      background:linear-gradient(175deg, #ffffff0c, #ffffff08);
+      box-shadow: 0 10px 40px #00000055, inset 0 1px 0 #ffffff30;
+      backdrop-filter: blur(14px) saturate(120%);
+      border:1px solid #ffffff20;
+    }
+    header{
+      display:flex; align-items:center; gap:16px; flex-wrap:wrap; justify-content:space-between; margin-bottom:8px;
+    }
+    .title{
+      display:flex; align-items:center; gap:14px;
+    }
+    .title h1{
+      font-family:"Playfair Display", serif; font-weight:700; margin:0; line-height:1.1;
+      font-size: clamp(28px, 5vw, 42px);
+      background: linear-gradient(90deg, #fff, #ffd6e8 40%, var(--rose));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow: 0 0 24px #ff5fa24d;
+    }
+    .subtitle{
+      font-size:14px; opacity:.8; margin-top:4px;
+    }
+    .pill{
+      border:1px solid #ffffff30; background:#ffffff10; padding:10px 14px; border-radius:999px; display:inline-flex; gap:10px; align-items:center;
+      backdrop-filter: blur(10px);
+    }
+    .pill button{
+      all:unset; cursor:pointer; padding:8px 12px; border-radius:999px; font-weight:600; color:#fff;
+      transition:.2s ease transform, .2s ease background;
+    }
+    .pill button:hover{transform: translateY(-1px)}
+    .btn{
+      background:linear-gradient(135deg, var(--pink), #ff7bbd); box-shadow: 0 8px 20px #ff5fa266; 
+    }
+    .btn.secondary{
+      background:linear-gradient(135deg, #6c63ff, #8aa1ff);
+      box-shadow: 0 8px 20px #6c63ff66;
+    }
+
+    /* Hero */
+    .hero{
+      display:grid; grid-template-columns:1.2fr .8fr; gap:24px; margin-top:18px;
+    }
+    @media (max-width: 880px){ .hero{grid-template-columns:1fr;}}
+    .glass{
+      background:linear-gradient(175deg, #ffffff12, #ffffff06);
+      border:1px solid #ffffff26; border-radius:20px; padding:18px; backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 #ffffff20;
+    }
+
+    /* Typewriter message */
+    .typebox{
+      min-height:142px; font-size:clamp(18px, 2.4vw, 22px); line-height:1.6; position:relative;
+      padding-right:12px;
+    }
+    .cursor{ display:inline-block; width:2px; height:1.1em; background:#fff; animation: blink 1s steps(1) infinite; vertical-align: -0.2em;}
+    @keyframes blink{50%{opacity:0}}
+
+    /* Gallery */
+    .gallery{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+    .gallery img{
+      width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; border-radius:14px; 
+      box-shadow: 0 10px 30px #00000055; transform: translateZ(0);
+      transition: transform .35s ease, box-shadow .35s ease;
+      border:1px solid #ffffff22;
+    }
+    .gallery img:hover{ transform: scale(1.03); box-shadow: 0 14px 40px #00000066}
+    @media (max-width:620px){ .gallery{grid-template-columns:repeat(2,1fr)} }
+
+    /* Reveal */
+    .reveal{
+      margin-top:18px; text-align:center;
+    }
+    .secret{
+      margin-top:14px; padding:18px; border-radius:14px; display:none;
+      background:linear-gradient(145deg, #ffffff14, #ffffff08); border:1px solid #ffffff22;
+      font-size:clamp(18px, 2.4vw, 22px);
+    }
+
+    /* Footer note */
+    footer{
+      margin-top:20px; text-align:center; opacity:.75; font-size:13px;
+    }
+
+    /* Confetti layer */
+    #confetti{ position:fixed; inset:0; pointer-events:none; z-index:2 }
+  </style>
+</head>
+<body>
+
+  <!-- decorative stars -->
+  <div class="stars" id="stars"></div>
+
+  <!-- confetti -->
+  <canvas id="confetti"></canvas>
+
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div class="title">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <path d="M12 21s-7.5-4.35-9.5-8.88C1.1 8.65 3.57 6 6.5 6c1.74 0 3.41.81 4.5 2.09C12.09 6.81 13.76 6 15.5 6c2.93 0 5.4 2.65 4 6.12C19.5 16.65 12 21 12 21Z" fill="#ff90c2"/>
+          </svg>
+          <div>
+            <h1>Voor jou, mijn baby❤️</h1>
+            <div class="subtitle">Een kleine verrassing, speciaal vandaag…</div>
+          </div>
+        </div>
+        <div class="pill">
+          <button class="btn" id="playMusic">🎵 Speel muziek</button>
+          <button class="btn secondary" id="revealBtn">🎁 Open verrassing</button>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div class="glass">
+          <div class="typebox" id="typebox"></div>
+        </div>
+
+        <div class="glass">
+          <div class="gallery">
+            <!-- TODO: Vervang de src door jullie eigen foto’s/links -->
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop" alt="wij">
+            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=800&auto=format&fit=crop" alt="wij">
+            <img src="https://images.unsplash.com/photo-1514846326710-096e4a8035e0?q=80&w=800&auto=format&fit=crop" alt="wij">
+            <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=800&auto=format&fit=crop" alt="wij">
+            <img src="https://images.unsplash.com/photo-1484249170766-998fa6efe3c0?q=80&w=800&auto=format&fit=crop" alt="wij">
+            <img src="https://images.unsplash.com/photo-1518600506278-4e8ef466b810?q=80&w=800&auto=format&fit=crop" alt="wij">
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal">
+        <div class="secret" id="secret">
+          <!-- TODO: Zet hier je eigen boodschap / uitnodiging / link -->
+          💖 Verrassing: zaterdag om 19:00 heb ik een tafel gereserveerd bij onze favoriete plek.
+          Daarna… nog een kleine extra. Trek iets comfy aan. Ik zorg voor de rest. ✨
+        </div>
+      </section>
+
+      <footer>
+        Gemaakt met liefde — door mij, voor jou.
+      </footer>
+    </div>
+  </div>
+
+  <!-- OPTIONAL: eigen muziekbestand (autoplay niet toegestaan door browsers) -->
+  <!-- TODO: vervang door je eigen mp3 in dezelfde map, bv. love.mp3 -->
+  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/02/28/audio_6a653c2f9b.mp3?filename=romantic-song-139600.mp3" preload="auto"></audio>
+
+  <script>
+    /* =============== Confetti =============== */
+    (function confetti(){
+      const canvas = document.getElementById('confetti');
+      const ctx = canvas.getContext('2d');
+      let W, H, pieces = []; const colors = ['#ff5fa2','#ffd166','#7dd3fc','#c4b5fd','#f9a8d4'];
+      const rand=(a,b)=>Math.random()*(b-a)+a;
+      const resize=()=>{ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; };
+      window.addEventListener('resize', resize); resize();
+      for(let i=0;i<120;i++){
+        pieces.push({x:rand(0,W), y:rand(-H,0), r:rand(4,10), c:colors[i%colors.length], v:rand(1,3), s:rand(.5,2)});
+      }
+      const draw=()=>{
+        ctx.clearRect(0,0,W,H);
+        pieces.forEach(p=>{
+          ctx.fillStyle=p.c;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+          p.y+=p.v; p.x+=Math.sin(p.y*0.02)*p.s;
+          if(p.y>H+20){ p.y=rand(-H*0.3,-20); p.x=rand(0,W) }
+        });
+        requestAnimationFrame(draw);
+      };
+      draw();
+      setTimeout(()=>{ pieces=[]; ctx.clearRect(0,0,W,H) }, 4500); // confetti verdwijnt na 4.5s
+    })();
+
+    /* =============== Sterren (random dots) =============== */
+    (function stars(){
+      const wrap=document.getElementById('stars');
+      const N=80;
+      for(let i=0;i<N;i++){
+        const s=document.createElement('div');
+        s.className='star';
+        s.style.left= Math.random()*100+'%';
+        s.style.animationDuration= (8 + Math.random()*10) +'s';
+        s.style.animationDelay= (-Math.random()*10) +'s';
+        s.style.opacity= 0.4 + Math.random()*0.6;
+        s.style.transform = `translateY(${Math.random()*100}vh)`;
+        wrap.appendChild(s);
+      }
+    })();
+
+    /* =============== Typewriter =============== */
+    const lines = [
+      // TODO: Zet hier jullie eigen zinnen
+      "Dag liefje,",
+      "soms zijn woorden te klein voor wat ik voel,",
+      "maar ik probeer het toch elke dag een beetje meer.",
+      "Bedankt om jij te zijn. ❤️Loveyou forever❤️"
+    ];
+    const typebox=document.getElementById('typebox');
+    function typeWriter(text, i=0){
+      return new Promise(res=>{
+        const span=document.createElement('span');
+        typebox.appendChild(span);
+        const cursor=document.createElement('span'); cursor.className='cursor'; typebox.appendChild(cursor);
+        const step=()=>{
+          span.textContent = text.slice(0, i++);
+          if(i<=text.length){ setTimeout(step, 32 + Math.random()*30); }
+          else { cursor.remove(); res(); }
+        }; step();
+      });
+    }
+    (async function runType(){
+      typebox.innerHTML='';
+      for (const l of lines){
+        await typeWriter(l);
+        const br=document.createElement('br'); typebox.appendChild(br);
+        await new Promise(r=>setTimeout(r, 250));
+      }
+    })();
+
+    /* =============== Reveal =============== */
+    const revealBtn=document.getElementById('revealBtn');
+    const secret=document.getElementById('secret');
+    revealBtn.addEventListener('click', ()=>{
+      secret.style.display = secret.style.display==='block' ? 'none':'block';
+      if(secret.style.display==='block'){ secret.animate([{opacity:0, transform:'translateY(6px)'},{opacity:1, transform:'translateY(0)'}],{duration:250, easing:'ease-out'}) }
+    });
+
+    /* =============== Muziek =============== */
+    const bgm=document.getElementById('bgm');
+    const playBtn=document.getElementById('playMusic');
+    let playing=false;
+    playBtn.addEventListener('click', async ()=>{
+      try{
+        if(!playing){ await bgm.play(); playBtn.textContent='⏸️ Pauzeer muziek'; }
+        else{ bgm.pause(); playBtn.textContent='🎵 Speel muziek'; }
+        playing=!playing;
+      }catch(e){
+        alert('Browser blokkeert autoplay. Klik nog eens om te starten 😊');
+      }
+    });
+  </script>
+</body>
+</html>
