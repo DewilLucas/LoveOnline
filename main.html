@@ -159,24 +159,15 @@
           <div class="typebox" id="typebox"></div>
         </div>
 
-        <div class="glass">
-          <div class="gallery">
-            <!-- TODO: Vervang de src door jullie eigen foto’s/links -->
-            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop" alt="wij">
-            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=800&auto=format&fit=crop" alt="wij">
-            <img src="https://images.unsplash.com/photo-1514846326710-096e4a8035e0?q=80&w=800&auto=format&fit=crop" alt="wij">
-            <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=800&auto=format&fit=crop" alt="wij">
-            <img src="https://images.unsplash.com/photo-1484249170766-998fa6efe3c0?q=80&w=800&auto=format&fit=crop" alt="wij">
-            <img src="https://images.unsplash.com/photo-1518600506278-4e8ef466b810?q=80&w=800&auto=format&fit=crop" alt="wij">
-          </div>
+       <div class="glass">
+        <div class="gallery" id="gallery"></div>
         </div>
       </section>
 
       <section class="reveal">
         <div class="secret" id="secret">
           <!-- TODO: Zet hier je eigen boodschap / uitnodiging / link -->
-          💖 Verrassing: zaterdag om 19:00 heb ik een tafel gereserveerd bij onze favoriete plek.
-          Daarna… nog een kleine extra. Trek iets comfy aan. Ik zorg voor de rest. ✨
+          💖 Verrassing: zaterdag vanaf 18:00 heb ik een tafel gereserveerd bij 't Zudn (wacht op een antwoord)'.✨
         </div>
       </section>
 
@@ -188,7 +179,7 @@
 
   <!-- OPTIONAL: eigen muziekbestand (autoplay niet toegestaan door browsers) -->
   <!-- TODO: vervang door je eigen mp3 in dezelfde map, bv. love.mp3 -->
-  <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/02/28/audio_6a653c2f9b.mp3?filename=romantic-song-139600.mp3" preload="auto"></audio>
+  <audio id="bgm" src="audio\ADMT - Without You (Official Lyric Video).mp3" preload="auto" autoplay="true" loop="true" ></audio>
 
   <script>
     /* =============== Confetti =============== */
@@ -284,5 +275,44 @@
       }
     });
   </script>
+  <script>
+  // Dynamisch afbeeldingen laden uit img/img-index.json
+  async function loadGallery() {
+    const gallery = document.getElementById('gallery');
+    if (!gallery) return;
+
+    try {
+      const res = await fetch('img/img-index.json?v=' + Date.now()); // cache-bust
+      if (!res.ok) throw new Error('img-index.json niet gevonden');
+      const files = await res.json();
+
+      gallery.innerHTML = '';
+      // Optioneel: shuffle volgorde
+      // files.sort(() => Math.random()-0.5);
+
+      for (const name of files) {
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.alt = 'wij';
+        img.src = 'img/' + encodeURIComponent(name);
+        img.onerror = () => {
+          img.style.display = 'none';
+          // of: img.src = 'img/placeholder.jpg';
+        };
+        gallery.appendChild(img);
+      }
+    } catch (e) {
+      console.error('Gallery laden mislukt:', e);
+      // Fallback: laat evt. een boodschap zien
+      const p = document.createElement('p');
+      p.textContent = 'Kon de foto’s niet laden. Probeer later opnieuw.';
+      p.style.opacity = '.8';
+      gallery.replaceWith(p);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadGallery);
+</script>
 </body>
 </html>
