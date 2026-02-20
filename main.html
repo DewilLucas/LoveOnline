@@ -160,8 +160,8 @@
         </div>
 
        <div class="glass">
-        <div class="gallery" id="gallery"></div>
-        </div>
+  <div class="gallery" id="gallery"></div>
+</div>
       </section>
 
       <section class="reveal">
@@ -276,43 +276,74 @@
     });
   </script>
   <script>
-  // Dynamisch afbeeldingen laden uit img/img-index.json
-  async function loadGallery() {
-    const gallery = document.getElementById('gallery');
+  // ====== VUL HIER JE BESTANDSNAMEN IN (alleen de naam + extensie) ======
+  const FOTOS = [
+    "66af100e4aa2707ec3616796fa761e16.png",
+    "642c8f263c50f065d3ed979d10bfef9c.jpg",
+    "20250807_171317.jpg",
+    "IMG_20230725_083633_940.jpg",
+    "IMG_20230928_102942_344.jpg",
+    "IMG_20240628_213655_971.jpg",
+    "IMG_20240628_213656_124.jpg",
+    "IMG_20251123_135434_634.jpg",
+    "IMG_20251123_135434_747.jpg",
+    "IMG-20230709-WA0018.jpg",
+    "IMG-20240303-WA0032.jpg",
+];
+
+  // Optioneel: willekeurige volgorde (zet op false als je vaste volgorde wil)
+  const SHUFFLE = true;
+
+  function shuffleInPlace(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random()* (i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function renderGallery() {
+    const gallery = document.getElementById('gallery') || document.querySelector('.gallery');
     if (!gallery) return;
 
-    try {
-      const res = await fetch('img/img-index.json?v=' + Date.now()); // cache-bust
-      if (!res.ok) throw new Error('img-index.json niet gevonden');
-      const files = await res.json();
+    gallery.innerHTML = '';
+    const list = SHUFFLE ? shuffleInPlace([...FOTOS]) : FOTOS;
 
-      gallery.innerHTML = '';
-      // Optioneel: shuffle volgorde
-      // files.sort(() => Math.random()-0.5);
-
-      for (const name of files) {
-        const img = document.createElement('img');
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.alt = 'wij';
-        img.src = 'img/' + encodeURIComponent(name);
-        img.onerror = () => {
-          img.style.display = 'none';
-          // of: img.src = 'img/placeholder.jpg';
-        };
-        gallery.appendChild(img);
-      }
-    } catch (e) {
-      console.error('Gallery laden mislukt:', e);
-      // Fallback: laat evt. een boodschap zien
-      const p = document.createElement('p');
-      p.textContent = 'Kon de foto’s niet laden. Probeer later opnieuw.';
-      p.style.opacity = '.8';
-      gallery.replaceWith(p);
+    for (const name of list) {
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = 'wij';
+      img.src = './img/' + encodeURIComponent(name);
+      img.onerror = () => { console.warn('Kon afbeelding niet laden:', img.src); img.remove(); };
+      // (optioneel) lightbox trigger:
+      img.addEventListener('click', () => openLightbox(img.src));
+      gallery.appendChild(img);
     }
   }
 
-  document.addEventListener('DOMContentLoaded', loadGallery);
+  // ====== (OPTIONEEL) SUPERSIMPELE LIGHTBOX ======
+  function ensureLightbox() {
+    if (document.getElementById('lb')) return;
+    const lb = document.createElement('div');
+    lb.id = 'lb';
+    lb.style.cssText = `
+      position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; 
+      align-items:center; justify-content:center; z-index:9999; cursor:zoom-out; padding:20px;
+    `;
+    lb.innerHTML = `<img id="lbimg" src="" alt="foto" style="max-width:95vw;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px #0008">`;
+    lb.addEventListener('click', () => lb.style.display='none');
+    document.body.appendChild(lb);
+  }
+  function openLightbox(src) {
+    ensureLightbox();
+    const lb = document.getElementById('lb');
+    const img = document.getElementById('lbimg');
+    img.src = src;
+    lb.style.display = 'flex';
+  }
+
+  document.addEventListener('DOMContentLoaded', renderGallery);
 </script>
 </body>
 </html>
